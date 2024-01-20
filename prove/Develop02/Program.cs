@@ -1,6 +1,9 @@
 using System;
 using System.IO;
 
+/*In order to exceed the requirements I did the following:
+(1) Entered a wrong input message that shows when the user enters a wrong value.
+(2) In the Journal.cs class file the code was improved so when the file is loaded it doesn't add to what was already loaded, it only shows what was recently loaded and the new entries to the journal only intead of repeating them.*/
 class Program
 {
     static void Main(string[] args)
@@ -43,6 +46,7 @@ class Program
                 case "5":
                     break;
                 default:
+                    //(1)
                     Console.WriteLine("Wrong input, please enter a valid option.");
                     break;
             }
