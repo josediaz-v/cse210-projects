@@ -20,6 +20,7 @@ public class Journal{
     }
 
     public void LoadFromFile(string file){
+        //(2)
          _entries.Clear();
          
         string[] lines = System.IO.File.ReadAllLines(file);
