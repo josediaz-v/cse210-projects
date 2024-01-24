@@ -1,5 +1,4 @@
 public class Fraction{
-    //Upload
     private int _top;
     private int _bottom;
 
