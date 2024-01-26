@@ -1,26 +1,48 @@
 public class Word{
-    string _text;
-    bool _isHidden;
+    private string _text;
+    private bool _isHidden;
 
     public Word(string text){
-
+        SetText(text);
+        SetIsHidden(false);
     }
 
-    private void Hide(){
-
+    public void Hide(){
+        if(GetIsHidden() == false){
+            SetIsHidden(true);
+            SetText(new string('_', _text.Length));
+        }
     }
 
-    private void Show(){
+    /*private void Show(){
+        Console.WriteLine(_text);
+    }*/
 
-    }
-
-    private bool IsHidden(){
-        bool isHidden = false;
+    public bool IsHidden(){
+        bool isHidden = GetIsHidden();
         return isHidden;
     }
 
-    private string GetDisplayText(){
-        string displayText = "";
-        return displayText;
+    public string GetDisplayText(){
+        return GetText();
+    }
+
+    //(2)
+    //Setters
+    private string SetText(string text){
+        _text = text;
+        return text;
+    }
+    private bool SetIsHidden(bool isHidden){
+        _isHidden = isHidden;
+        return isHidden;
+    }
+
+    //Getters    
+    private string GetText(){
+        return _text;
+    }
+    private bool GetIsHidden(){
+        return _isHidden;
     }
 }

@@ -1,8 +1,8 @@
 public class Reference{
-    string _book;
-    int _chapter;
-    int _verse;
-    int _endVerse;
+    private string _book;
+    private int _chapter;
+    private int _verse;
+    private int _endVerse;
 
     public Reference(string book, int chapter, int verse){
         SetBook(book);
@@ -18,7 +18,15 @@ public class Reference{
     }
 
     public string GetDisplayText(){
-        string displayText = "";
+        string endVerse = GetEndVerse().ToString();;
+        //Removes the 0 from a single verse Reference
+        if(endVerse == "0"){
+            endVerse = "";
+        }
+        else{
+            endVerse = "-"+endVerse;
+        }
+        string displayText = GetBook() + " " + GetChapter() + ":" + GetStartVerse() + endVerse + " ";
         return displayText;
     }
 
@@ -44,19 +52,19 @@ public class Reference{
     }
 
     //Getters
-    public string GetBook(){
+    private string GetBook(){
         return _book;
     }
 
-    public int GetChapter(){
+    private int GetChapter(){
         return _chapter;
     }
 
-    public int GetStartVerse(){
+    private int GetStartVerse(){
         return _verse;
     }
 
-    public int GetEndVerse(){
+    private int GetEndVerse(){
         return _endVerse;
     }
 }
