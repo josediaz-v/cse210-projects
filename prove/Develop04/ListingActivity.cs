@@ -1,4 +1,7 @@
-class ListingActivity : Activity{
+using System.Diagnostics.Metrics;
+
+class ListingActivity : Activity{    
+    static ManualResetEvent counterFinishedEvent = new ManualResetEvent(false);
     private int _count;
     public int count { get {return _count;} set {_count = value;} }
     private List<string> _prompts = new List<string>(){
@@ -9,6 +12,7 @@ class ListingActivity : Activity{
         "--- Who are some of your personal heroes? ---"
     };
     public List<string> prompts { get {return _prompts;} set{_prompts = value;} }
+    List<string> userList = new List<string>();
 
     public ListingActivity(){
         Run();
@@ -23,8 +27,8 @@ class ListingActivity : Activity{
         Console.Write($"You may begin in: ");
         ShowCountDown(5);
         Console.WriteLine();
-        GetListFromUser();
-        Console.WriteLine($"You listed {GetListFromUser().Count()} items");
+        GetListFromUserAsync();
+        Console.WriteLine($"You listed {userList.Count()} items");
         DisplayEndingMessage();
     }
 
@@ -34,16 +38,27 @@ class ListingActivity : Activity{
         string rndPromt = prompts[rndIndex];
         Console.WriteLine($"\n{rndPromt}");
     }
-
-    private List<string> GetListFromUser(){
-        List<string> userList = new List<string>();
+    private async Task<List<string>> GetListFromUserAsync()
+    {
         DateTime currentTime = DateTime.Now;
         DateTime endTime = currentTime.AddSeconds(duration);
-        while(GetRemainingTime(endTime)>0)
+
+        CancellationTokenSource cts = new CancellationTokenSource();
+
+        Task countdownTask = Task.Run(() => CountDownAsync(endTime, cts.Token));
+
+        while (GetRemainingTime(endTime) > 0)
         {
             Console.Write("> ");
-            userList.Add(Console.ReadLine());
+            string userInput = Console.ReadLine();
+
+            if (userInput != null)
+            {
+                userList.Add(userInput);
+            }
         }
+        cts.Cancel();
+        await countdownTask;
         return userList;
     }
 }

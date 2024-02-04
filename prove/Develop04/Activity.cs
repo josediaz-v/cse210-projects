@@ -1,3 +1,5 @@
+using System.Diagnostics.Metrics;
+
 class Activity{
     private string _name;
     public string name { get {return _name;} set {_name = value;} }
@@ -35,28 +37,28 @@ class Activity{
         DateTime currentTime = DateTime.Now;
         DateTime endTime = currentTime.AddSeconds(duration);
         while(seconds>0){
-                Console.Write("-");
-                Thread.Sleep(200);
-                Console.Write("\b \b");
+            Console.Write("-");
+            Thread.Sleep(200);
+            Console.Write("\b \b");
 
-                Console.Write("\\");
-                Thread.Sleep(200);
-                Console.Write("\b \b");
+            Console.Write("\\");
+            Thread.Sleep(200);
+            Console.Write("\b \b");
 
-                Console.Write("|");
-                Thread.Sleep(200);
-                Console.Write("\b \b");
-                
-                Console.Write("/");
-                Thread.Sleep(200);
-                Console.Write("\b \b");
-                
-                GetRemainingTime(endTime);
-                seconds -=1;
+            Console.Write("|");
+            Thread.Sleep(200);
+            Console.Write("\b \b");
+            
+            Console.Write("/");
+            Thread.Sleep(200);
+            Console.Write("\b \b");
+            
+            GetRemainingTime(endTime);
+            seconds -=1;
 
-                if(remainingTime<=0){
-                    break;
-                }
+            if(remainingTime<=0){
+                break;
+            }
         }
     }
 
@@ -71,6 +73,14 @@ class Activity{
             Thread.Sleep(1000);
             Console.Write("\b \b");
             seconds -=1;
+        }
+    }
+    //(3)
+    protected async Task CountDownAsync(DateTime endTime, CancellationToken cancellationToken)
+    {
+        while (GetRemainingTime(endTime) > 0 && !cancellationToken.IsCancellationRequested)
+        {
+            await Task.Delay(1000);
         }
     }
 }

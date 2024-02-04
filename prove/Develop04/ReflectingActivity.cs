@@ -38,6 +38,13 @@ class ReflectingActivity : Activity{
         return rndPromt;
     }
 
+    private string GetRandomQuestion(){        
+        Random rndNumber = new Random();
+        int rndIndex = rndNumber.Next(0, questions.Count());
+        string rndPromt = questions[rndIndex];
+        return rndPromt;
+    }
+
     private void DisplayPrompt(){
         Console.WriteLine("\nConsider the following prompt:");
         Console.WriteLine($"\n{GetRandomPromt()}");
@@ -52,11 +59,15 @@ class ReflectingActivity : Activity{
         DateTime currentTime = DateTime.Now;
         DateTime endTime = currentTime.AddSeconds(duration);
         Console.Clear();
-        foreach(string question in questions){
-                if(GetRemainingTime(endTime)>0){
-                    Console.Write($"\n{question}");
-                    ShowSpinner(20);
-                }
+        //foreach(string question in questions){
+        while(GetRemainingTime(endTime)>0){
+            Console.Write($"\n{GetRandomQuestion()}");
+            ShowSpinner(10);
         }
+                /*if(GetRemainingTime(endTime)>0){
+                    Console.Write($"\n{GetRandomQuestion()}");
+                    ShowSpinner(20);
+                }*/
+        //}
     }
 }

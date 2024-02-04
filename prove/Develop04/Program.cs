@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using System.Threading;
+
 
 class Program
 {
@@ -8,7 +10,8 @@ class Program
         //Console.WriteLine("Hello Develop04 World!");
         /*In order to exceed the requirements I did the following:
         (1) This will avoid the user from choosing a different option.
-        (2) I modified the spinner to stop when the activity time ends if it does not reach the time of the spinner*/
+        (2) I modified the spinner to stop when the activity time ends if it does not reach the time of the spinner
+        (3) Added an asynchronous method to keep track of the time remaining for the ListingActivity class that will run in the background while waiting for the user input*/
         string userInput = "";
 
         while (userInput != "4"){
