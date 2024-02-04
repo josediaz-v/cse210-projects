@@ -1,14 +1,10 @@
 using System.Diagnostics.Metrics;
 
 class Activity{
-    private string _name;
-    public string name { get {return _name;} set {_name = value;} }
-    private string _description;
-    public string description { get {return _description;} set {_description = value;} }
-    private int _duration;
-    public int duration { get {return _duration;} set {_duration = value;} }
-    private double _remainingTime;
-    public double remainingTime { get{return _remainingTime;} set{_remainingTime = value;} }
+    public string name { get; set; }
+    public string description { get; set; }
+    public int duration { get; set; }
+    public double remainingTime { get; set; }
 
     public Activity(){
 

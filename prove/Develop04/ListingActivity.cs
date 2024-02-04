@@ -2,8 +2,7 @@ using System.Diagnostics.Metrics;
 
 class ListingActivity : Activity{    
     static ManualResetEvent counterFinishedEvent = new ManualResetEvent(false);
-    private int _count;
-    public int count { get {return _count;} set {_count = value;} }
+    public int count { get; set; }
     private List<string> _prompts = new List<string>(){
         "--- Who are people that you appreciate? ---",
         "--- What are personal strengths of yours? ---",
