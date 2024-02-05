@@ -59,15 +59,9 @@ class ReflectingActivity : Activity{
         DateTime currentTime = DateTime.Now;
         DateTime endTime = currentTime.AddSeconds(duration);
         Console.Clear();
-        //foreach(string question in questions){
         while(GetRemainingTime(endTime)>0){
             Console.Write($"\n{GetRandomQuestion()}");
             ShowSpinner(10);
         }
-                /*if(GetRemainingTime(endTime)>0){
-                    Console.Write($"\n{GetRandomQuestion()}");
-                    ShowSpinner(20);
-                }*/
-        //}
     }
 }
