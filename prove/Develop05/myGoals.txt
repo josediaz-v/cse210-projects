@@ -1,4 +1,0 @@
-1250
-SimpleGoal|sg|Simple Goal|50|True
-EternalGoal|eg|Eternal Goal|100
-ChecklistGoal|Chkg|Checklist Goal|1010|1000|5|5
