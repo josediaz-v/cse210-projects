@@ -25,7 +25,13 @@ namespace FinalProject
         private double _itemRestock;
         public double itemRestock { get { return _itemRestock; } set { _itemRestock = value; } }
 
-        private double _price;
-        public double price { get { return _price; } set { _price = value; } }
+        /*public Item(int itemId, string itemName, double itemPrice, double itemStock, string itemUnit, double itemRestock){
+            _itemId = itemId;
+            _itemName = itemName;
+            _itemPrice = itemPrice;
+            _itemStock = itemStock;
+            _itemUnit = itemUnit;
+            _itemRestock = itemRestock;
+        }*/
     }
 }

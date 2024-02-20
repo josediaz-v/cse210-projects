@@ -30,7 +30,7 @@
                 "1",
                 "2"
             };
-            Console.WriteLine("Menu Options:\n 1. Sign Out\n 2. Search Inventory\n\nSelect a choice from the menu: ");
+            Console.Write("Menu Options:\n 1. Sign Out\n 2. Search Inventory\n\nSelect a choice from the menu: ");
             return options;
         }
     }

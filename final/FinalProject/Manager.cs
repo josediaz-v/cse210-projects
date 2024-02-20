@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using static System.Formats.Asn1.AsnWriter;
 
@@ -12,13 +13,14 @@ namespace FinalProject
         private List<User> userList = new List<User>();
 
         User user = new User("","","","","");
-        Item item = new Item();
+        Item item = new Item(){};
         User signedUser = new User("","","","","");
 
         private bool signedIn = false;
 
         public Manager() {
             LoadUsers();
+            LoadItems();
             while(!signedIn)
             {
                 Start();
@@ -40,8 +42,8 @@ namespace FinalProject
             {
                 CreateUser();
             }
-            else if(userInput == "3"){                
-                System.Environment.Exit(1);
+            else if(userInput == "3"){
+                EndProgram();
             }
         }
 
@@ -50,7 +52,10 @@ namespace FinalProject
             string userInput = "";
             while(userInput!="1"){
                 Console.Clear();
-                Console.Write($"Welcome {signedUser.userFirstName} {signedUser.userLastName} to the Inventory Manager");
+                Console.Write($"Welcome {signedUser.userFirstName} {signedUser.userLastName} to the Inventory Manager\n");
+                if(signedUser.userType == "supervisor"){
+                    ItemsRestock();
+                }
                 List<string> options = signedUser.GetMenu();
                 userInput = Console.ReadLine();
                 if(options.Contains(userInput)){
@@ -75,39 +80,168 @@ namespace FinalProject
             }
         }
 
-        public string CheckInventory(int itemId)
+        public string CheckInventory(string itemName)
         {
+            bool found = false;
             string result="";
-            switch (user.userType)
-            {
-
-                case "supervisor":
-                    result = $"{itemId}: {item.itemName} / ${item.price} / {item.itemStock} {item.itemUnit} / {item.itemRestock} {item.itemUnit}";
-                    break;
-                case "seller":
-                    result = $"{itemId}: {item.itemName} / ${item.price} / {item.itemStock} {item.itemUnit}";
-                    break;
-                case "customer":
-                    if (item.itemStock > 0)
+            foreach(Item item in itemList){
+                if(item.itemName.ToLower().Contains(itemName.ToLower())){
+                    switch (signedUser.userType)
                     {
-                        result = $"{itemId}: {item.itemName} / ${item.price}";
+                        case "supervisor":
+                            result += $"\n\n Item Id: {item.itemId}\n Name: {item.itemName}\n Price: ${item.itemPrice}\n Stock: {item.itemStock} {item.itemUnit}\n Restock: {item.itemRestock} {item.itemUnit}";
+                            found = true;
+                            break;
+                        case "seller":
+                            result += $"\n\n Item Id: {item.itemId}\n Name: {item.itemName}\n Price: ${item.itemPrice}\n Stock: {item.itemStock} {item.itemUnit}";
+                            found = true;
+                            break;
+                        case "customer":
+                            result += $"\n\n Item Id: {item.itemId}\n Name: {item.itemName}\n Price: ${item.itemPrice}";
+                            found = true;
+                            break;
                     }
-                    else
-                    {
-                        result = "No item found";
-                    }
-                    break;
-
+                }
             }
-            
+            if(!found){                
+                result = "No item found";
+            }
             return result;
         }
 
-        //Methods used to manipulate an item
-        public void SearchItem(){ }
-        public void AddItem(){ }
-        public void RemoveItem(){ }
-        public void UpdateItem(){ }
+        public void SearchItem(){
+            Console.Clear();
+            Console.Write("Enter item name: ");
+            string itemName = Console.ReadLine();
+            Console.WriteLine("\nResult:"+CheckInventory(itemName));
+            Console.Write("\nPress Enter to continue...");
+            Console.ReadLine();
+        }
+        public void AddItem(){
+            string userInput = "y";
+            while(userInput == "y"){
+                Console.Clear();
+                Item item = new Item();
+                int i = 0;
+                if(itemList.Count>0){
+                    foreach(Item items in itemList){
+                        if(items.itemId-1 == i){
+                            i++;
+                        }
+                    }
+                    item.itemId = i+1;
+                }
+                else{                    
+                    item.itemId = itemList.Count()+1;
+                }
+
+                Console.Write("Enter Item Name: ");
+                item.itemName = Console.ReadLine();
+                foreach(Item items in itemList)
+                {
+                    while(item.itemName == items.itemName)
+                    {
+                        Console.Write("Item already exists, enter another Item Name: ");
+                        item.itemName = Console.ReadLine();
+                    }
+                }
+                Console.Write("Enter Item Price: ");
+                item.itemPrice = double.Parse(Console.ReadLine());
+                Console.Write("Enter Item Stock: ");
+                item.itemStock = double.Parse(Console.ReadLine());
+                Console.Write("Enter Item Unit: ");
+                item.itemUnit = Console.ReadLine();
+                Console.Write("Enter Item Restock: ");
+                item.itemRestock = double.Parse(Console.ReadLine());
+                itemList.Add(item);
+                Console.Clear();
+                Console.Write("Item successfully added.");
+                Thread.Sleep(2000);
+                userInput = "";
+                while(userInput!="y" && userInput!="n"){
+                    Console.Clear();
+                    Console.Write("Add another item y/n? ");
+                    userInput = Console.ReadLine();
+                }
+                List<Item> SortedList = itemList.OrderBy(i=>i.itemId).ToList();
+                itemList.Clear();
+                itemList = SortedList;
+                SaveItem();
+            }
+        }
+        public void RemoveItem(){
+            Item itemToRemove = new Item();
+            Console.Clear();
+            Console.Write("Enter Item Id to remove: ");
+            int itemId = int.Parse(Console.ReadLine());
+            foreach(Item item in itemList){
+                if(item.itemId == itemId){
+                    itemToRemove = item;
+                }
+            }
+            itemList.Remove(itemToRemove);
+            SaveItem();
+            Console.Clear();
+            Console.Write("Item correctly removed.");
+            Thread.Sleep(2000);
+        }
+        public void UpdateItem(){
+            Console.Clear();
+            Console.Write("Enter the item Id to Update: ");
+            int itemId = int.Parse(Console.ReadLine());
+            foreach(Item item in itemList){
+                if(item.itemId == itemId){
+                    Console.Write($"Would you like to Update {item.itemName} y/n? ");
+                    string userInput = Console.ReadLine();
+                    if(userInput=="y"){
+                        Console.Write("Enter Item Name: ");
+                        item.itemName = Console.ReadLine();
+                        Console.Write("Enter Item Price: ");
+                        item.itemPrice = double.Parse(Console.ReadLine());
+                        Console.Write("Enter Item Stock: ");
+                        item.itemStock = double.Parse(Console.ReadLine());
+                        Console.Write("Enter Item Unit: ");
+                        item.itemUnit = Console.ReadLine();
+                        Console.Write("Enter Item Restock: ");
+                        item.itemRestock = double.Parse(Console.ReadLine());
+                    }
+                }
+            }
+
+            SaveItem();
+        }
+
+        public void SaveItem(){
+            string filename = "items.txt";
+
+            using (StreamWriter outputFile = new StreamWriter(filename))
+            {
+                foreach (Item item in itemList)
+                {
+                    outputFile.WriteLine(item.itemId + "|" + item.itemName + "|" + item.itemPrice + "|" + item.itemStock + "|" + item.itemUnit + "|" + item.itemRestock);
+                }
+            }
+        }
+        
+        public void LoadItems() {
+            string filename = "items.txt";
+            string[] lines = System.IO.File.ReadAllLines(filename);
+            itemList.Clear();
+            foreach (string line in lines)
+            {
+                string[] parts = line.Split("|");
+                string userType = parts[4];
+                Item item = new Item();
+                item.itemId = int.Parse(parts[0]);
+                item.itemName = parts[1];
+                item.itemPrice = double.Parse(parts[2]);
+                item.itemStock = double.Parse(parts[3]);
+                item.itemUnit = parts[4];
+                item.itemRestock = double.Parse(parts[5]);
+
+                itemList.Add(item);
+            }
+        }
 
         //Methods for writing and reading from file
         public void LoadUsers() {
@@ -158,12 +292,6 @@ namespace FinalProject
                 Console.Write("Enter your password: ");
                 string userPassword = Console.ReadLine();
                 signedIn = CheckUser(userId, userPassword);
-                /*if(signedIn)
-                {
-                    Console.Clear();
-                    Console.WriteLine($"Welcome {signedUser.userFirstName} {signedUser.userLastName}");
-                    Thread.Sleep(1000);
-                }*/
                 if(!signedIn)
                 {
                     Console.Clear();
@@ -249,6 +377,24 @@ namespace FinalProject
             }
 
             SaveUsers();
+        }
+
+        //Method used for finishing the program
+        public void EndProgram(){
+        Console.Clear();
+        Console.Write("Thank you for using the program");
+        Thread.Sleep(2000);                
+        System.Environment.Exit(1);   
+        }
+
+        public void ItemsRestock(){
+            Console.WriteLine("\nItems to Restock:\n\nId | Name & Units Left\n----------------------");
+            foreach(Item item in itemList){
+                if(item.itemStock <= item.itemRestock){
+                    Console.WriteLine(" " + item.itemId + " | " + item.itemName +" "+ item.itemStock + " " +item.itemUnit);
+                }
+            }
+            Console.WriteLine("");
         }
     }
 }

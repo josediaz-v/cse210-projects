@@ -1,0 +1,7 @@
+1|Milk|5|10|unit|5
+2|Cereal|3|3|unit|5
+3|Chicken|7|100|lb|15
+4|Fish|4|100|lb|20
+5|Chocolate Bar|1|2|unit|10
+6|Chocolate Cookie|0.5|50|unit|5
+7|Coconut Milk|1|20|unit|5
