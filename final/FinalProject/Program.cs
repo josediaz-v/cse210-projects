@@ -1,4 +1,6 @@
+using FinalProject;
 using System;
+using System.IO;
 
 class Program
 {
@@ -6,6 +8,6 @@ class Program
     {
         //Console.WriteLine("Hello FinalProject World!");
 
-
+        Manager manager = new Manager();
     }
 }
